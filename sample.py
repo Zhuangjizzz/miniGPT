@@ -1,13 +1,29 @@
 import torch
 from model import GPT, GPTConfig
 from transformers import GPT2Tokenizer
+import argparse
+import random
+import numpy as np
+
+# 设置随机种子
+seed = 42  # 你可以更改这个值
+torch.manual_seed(seed)
+random.seed(seed)
+np.random.seed(seed)
+
+parser = argparse.ArgumentParser(description="sample")
+parser.add_argument('--checkpoint_path', type=str, default='./output/trained_gpt_model.pth', help="Path to the trained model checkpoint.")
+parser.add_argument('--prompt', type=str, default="Once upon a time", help="Prompt for text generation.")
+
+args = parser.parse_args()
+model_load_path = args.checkpoint_path
+prompt = args.prompt
 
 
 
 # 加载分词器
 tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
 
-# 使用与训练时相同的配置初始化模型
 config = GPTConfig(
     vocab_size=50257,
     block_size=1024,
@@ -20,7 +36,6 @@ config = GPTConfig(
 model = GPT(config)
 
 # 加载保存的模型权重
-model_load_path = './output/trained_gpt_model.pth'
 model.load_state_dict(torch.load(model_load_path))
 
 # 将模型移动到 GPU（如果可用）
@@ -42,9 +57,7 @@ def generate_text(prompt, max_new_tokens=50, temperature=1.0, top_k=None):
         generated_text = tokenizer.decode(output_ids[0], skip_special_tokens=True)
         return generated_text
 
-# 示例用法
-if __name__ == '__main__':
-    prompt = "Once upon a time"
-    generated_text = generate_text(prompt, max_new_tokens=200)
-    print("输入提示：", prompt)
-    print("生成文本：", generated_text)
+
+generate_text = generate_text(prompt, max_new_tokens=200)
+print("输入提示：", prompt)
+print("生成文本：", generate_text)

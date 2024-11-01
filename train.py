@@ -20,7 +20,8 @@ parser.add_argument('--train_data_path', type=str, default='./data/train.bin', h
 parser.add_argument('--val_data_path', type=str, default='./data/train.bin', help="Path to the validation data file.")
 parser.add_argument('--batch_size', type=int, default=1, help="Batch size for training.")
 parser.add_argument('--epochs', type=int, default=0, help="Number of training epochs.")
-parser.add_argument('--init_from', type=str, default="gpt2", help="scratch or resume or gpt2")
+parser.add_argument('--init_from', type=str, default="resume", help="scratch or resume or gpt2")
+parser.add_argument('--checkpoint_path', type=str, default='./output/trained_gpt_model.pth', help="Path to the model checkpoint to resume training.")
 parser.add_argument('--out_dir', type=str, default='./output', help="Directory to save the trained model.")
 
 args = parser.parse_args()

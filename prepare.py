@@ -10,23 +10,19 @@ import argparse
 # argparse 设置命令行参数解析，允许在运行时覆盖默认值
 parser = argparse.ArgumentParser(description="Data processing script")
 parser.add_argument('--num_proc', type=int, default=8, help="Number of processes to use for tokenization and loading")
-parser.add_argument('--proxy', type=str, default="http://127.0.0.1:7890", help="Proxy URL for HTTP and HTTPS connections")
 args = parser.parse_args()
 
 # 使用命令行参数或默认值
 num_proc = args.num_proc
 num_proc_load_dataset = num_proc
-proxy = args.proxy
-
-# 设置代理
-os.environ['http_proxy'] = proxy
-os.environ['https_proxy'] = proxy
 
 # 初始化编码器
 enc = tiktoken.get_encoding("gpt2")
 
 # 加载并处理数据集
 dataset = load_dataset('wikitext', 'wikitext-103-v1', download_mode='force_redownload', num_proc=num_proc_load_dataset)
+# takes 54GB in huggingface .cache dir, about 8M documents (8,013,769)
+# dataset = load_dataset("openwebtext", num_proc=num_proc_load_dataset)
 
 # 划分数据集
 split_dataset = dataset["train"].train_test_split(test_size=0.0005, seed=2357, shuffle=True)
